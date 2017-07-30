@@ -8,9 +8,9 @@ using Newtonsoft.Json;
 
 public class KenticoManager
 {
-    private string BaseURL;
-    private AuthenticationHeaderValue AuthHeader;
-    private string ResponseFormat;
+    private string baseURL;
+    private AuthenticationHeaderValue authHeader;
+    private string responseFormat;
 
     /// <summary>
     /// Default Constructor
@@ -20,14 +20,14 @@ public class KenticoManager
         //Pull from root appsettings.json file
         var username = Environment.GetEnvironmentVariable("KenticoRestUserName");
         var password = Environment.GetEnvironmentVariable("KenticoRestPassword");
-        BaseURL = Environment.GetEnvironmentVariable("KenticoSiteUrlBase");
+        baseURL = Environment.GetEnvironmentVariable("KenticoSiteUrlBase");
 
         //Create the required Authorization Header Values by base 64 encoding a valid Kentico user's credentials
         var byteArray = Encoding.ASCII.GetBytes(string.Format("{0}:{1}", username, password));
-        AuthHeader = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+        authHeader = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
         //Specify to Kentico REST API that we expect JSON response format instead of the default XML
-        ResponseFormat = "json";
+        responseFormat = "json";
     }
     
     /// <summary>
@@ -41,12 +41,12 @@ public class KenticoManager
     {
         using (var httpClient = new HttpClient())
         {
-            httpClient.DefaultRequestHeaders.Authorization = AuthHeader;
+            httpClient.DefaultRequestHeaders.Authorization = authHeader;
 
             string url = string.Format("{0}{1}?format={2}&{3}",
-                BaseURL,
+                baseURL,
                 UrlEndPointPath,
-                ResponseFormat,
+                responseFormat,
                 UrlParams);
 
             var response = await httpClient.GetAsync(url);
